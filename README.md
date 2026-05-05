@@ -1,5 +1,7 @@
 # SubBili
 
+English | [中文版](./README_CN.md)
+
 A premium, high-performance UserScript for downloading Bilibili subtitles in SRT and BCC formats. Built with a modern tech stack and featuring a smart diagnosis system to bypass Bilibili's latest anti-scraping measures.
 
 ## ✨ Features
