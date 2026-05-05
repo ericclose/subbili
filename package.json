@@ -1,7 +1,7 @@
 {
   "name": "subbili",
   "version": "0.1.0",
-  "description": "SubBili Pro with Vite Build",
+  "description": "SubBili with Vite Build",
   "type": "module",
   "scripts": {
     "dev": "vite",

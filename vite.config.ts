@@ -7,7 +7,7 @@ export default defineConfig({
     monkey({
       entry: 'src/main.ts',
       userscript: {
-        name: 'SubBili Pro',
+        name: 'SubBili',
         namespace: 'https://scriptcat.org/',
         version: pkg.version,
         description: 'A premium Bilibili subtitle downloader with SRT/BCC support, sleek UI, and smart diagnosis.',
