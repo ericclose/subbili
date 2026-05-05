@@ -4,7 +4,7 @@ import { GM_xmlhttpRequest, GM_setClipboard } from '$';
 // --- Configuration & Constants ---
 const ICONS = {
     download: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;"><path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a3.375 3.375 0 0 0 3.375 3.375h9.75a3.375 3.375 0 0 0 3.375-3.375V16.5a.75.75 0 0 1 1.5 0v2.25a4.875 4.875 0 0 1-4.875 4.875H7.125A4.875 4.875 0 0 1 2.25 18.75V16.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>`,
-    bug: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;"><path fill-rule="evenodd" d="M11.097 1.515a.75.75 0 0 1 .589.882L10.666 7.5h2.668l-.92-5.103a.75.75 0 1 1 1.472.265l1.02 5.655.162.9a.75.75 0 0 1-.741.883h-4.854a.75.75 0 0 1-.74-.883l.161-.9 1.021-5.655a.75.75 0 0 1 .882-.589ZM8.273 4.45a.75.75 0 0 1 .311 1.013l-2.5 4.33a.75.75 0 1 1-1.299-.75l2.475-4.282a.75.75 0 0 1 1.013-.311Zm7.454 0a.75.75 0 0 1 1.013.311l2.475 4.282a.75.75 0 1 1-1.299.75l-2.5-4.33a.75.75 0 0 1 .311-1.013ZM4.87 11.25a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75Zm14.26 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75ZM3.795 15.51a.75.75 0 0 1 1.012-.312l2.475 4.282a.75.75 0 1 1-1.299.75l-2.5-4.33a.75.75 0 0 1 .312-1.01Zm16.41 0a.75.75 0 0 1 .312 1.01l-2.5 4.33a.75.75 0 1 1-1.299-.75l2.475-4.282a.75.75 0 0 1 1.012.312ZM12 7.5a6 6 0 0 1 6 6v1.5a6 6 0 0 1-6 6 6 6 0 0 1-6-6v-1.5a6 6 0 0 1 6-6Z" clip-rule="evenodd" /></svg>`,
+    bug: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 22px; height: 22px;"><path fill-rule="evenodd" d="M10.5 3.75a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9.75 6a.75.75 0 0 0-.75.75V12h5.25V6.75a.75.75 0 0 0-.75-.75h-3.75ZM9 13.5H5.621a.75.75 0 0 0-.728.568l-.397 1.585a.75.75 0 0 0 .728.932h13.552a.75.75 0 0 0 .728-.932l-.397-1.585a.75.75 0 0 0-.728-.568H15V13.5H9Z" clip-rule="evenodd" /><path d="M4.715 16.5 4.5 17.36c-.244.972.483 1.89 1.488 1.89h12.024c1.005 0 1.732-.918 1.488-1.89L19.285 16.5H4.715Z" /></svg>`,
     x: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>`,
     copy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 0 1 3.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0 1 21 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 0 1 7.5 16.125V3.375Z" /><path d="M4.5 7.125A1.875 1.875 0 0 0 2.625 9v9a3.75 3.75 0 0 0 3.75 3.75h9a1.875 1.875 0 0 0 1.875-1.875V16.5H6.375a3.375 3.375 0 0 1-3.375-3.375V7.125H4.5Z" /></svg>`,
     trash: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5 0v8.25a.75.75 0 0 0 1.5 0v-8.25Zm4.5 0a.75.75 0 1 0-1.5 0v8.25a.75.75 0 0 0 1.5 0v-8.25Z" clip-rule="evenodd" /></svg>`,
@@ -27,7 +27,7 @@ const THEME = {
     success: '#52c41a'
 };
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.2';
 
 let currentCid: number | null = null;
 const logs: any[] = [];
@@ -152,8 +152,10 @@ async function fetchVideoInfoFallback(bvid: string) {
     });
 }
 
-async function fetchSubtitles(info: any, isRetry = false): Promise<any[]> {
+async function fetchSubtitles(info: any, retryCount = 0): Promise<any[]> {
     let { aid, bvid, cid } = info;
+    const maxRetries = 2;
+
     if (!cid && bvid) {
         const recoveryInfo = await fetchVideoInfoFallback(bvid);
         if (recoveryInfo) {
@@ -164,35 +166,63 @@ async function fetchSubtitles(info: any, isRetry = false): Promise<any[]> {
     }
     if (!cid) throw new Error('无法定位 CID 视频信息');
 
-    const url = `https://api.bilibili.com/x/player/v2?cid=${cid}&aid=${aid || ''}&bvid=${bvid || ''}`;
-    log('INFO', `请求字幕列表... ${isRetry ? '(第二次尝试)' : ''}`);
-    return new Promise<any[]>((resolve, reject) => {
+    const v2Url = `https://api.bilibili.com/x/player/v2?cid=${cid}&aid=${aid || ''}&bvid=${bvid || ''}`;
+    log('INFO', `请求字幕列表 (V2 API)... ${retryCount > 0 ? `(第 ${retryCount} 次重试)` : ''}`);
+
+    const tryV2 = () => new Promise<any[]>((resolve, reject) => {
         GM_xmlhttpRequest({
             method: "GET",
-            url: url,
-            headers: { 
-                'Referer': window.location.href,
-                'Cache-Control': 'no-cache'
-            },
-            onload: async function(response: any) {
+            url: v2Url,
+            headers: { 'Referer': window.location.href, 'Cache-Control': 'no-cache' },
+            onload: (response: any) => {
                 try {
                     const res = JSON.parse(response.responseText);
-                    if (res.code === 0 && res.data.subtitle && res.data.subtitle.subtitles && res.data.subtitle.subtitles.length > 0) {
+                    if (res.code === 0 && res.data?.subtitle?.subtitles?.length > 0) {
                         resolve(res.data.subtitle.subtitles);
-                    } else { 
-                        if (!isRetry) {
-                            log('WARNING', '列表为空，1.5秒后自动重试...');
-                            await new Promise(r => setTimeout(r, 1500));
-                            resolve(await fetchSubtitles(info, true));
-                        } else {
-                            resolve([]); 
-                        }
-                    }
-                } catch (e) { reject(e); }
+                    } else { resolve([]); }
+                } catch (e) { resolve([]); }
             },
-            onerror: (err: any) => reject(err)
+            onerror: () => resolve([])
         });
     });
+
+    const tryView = () => new Promise<any[]>((resolve) => {
+        const viewUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${bvid || ''}&aid=${aid || ''}`;
+        log('INFO', `尝试从 View API 获取字幕...`);
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: viewUrl,
+            headers: { 'Referer': window.location.href },
+            onload: (response: any) => {
+                try {
+                    const res = JSON.parse(response.responseText);
+                    if (res.code === 0 && res.data?.subtitle?.list?.length > 0) {
+                        // Adapt View API format to V2 format
+                        const mapped = res.data.subtitle.list.map((s: any) => ({
+                            lan: s.lan,
+                            lan_doc: s.lan_doc,
+                            subtitle_url: s.subtitle_url
+                        }));
+                        resolve(mapped);
+                    } else { resolve([]); }
+                } catch (e) { resolve([]); }
+            },
+            onerror: () => resolve([])
+        });
+    });
+
+    let subs = await tryV2();
+    if (subs.length === 0 && bvid) {
+        subs = await tryView();
+    }
+
+    if (subs.length === 0 && retryCount < maxRetries) {
+        log('WARNING', `未发现字幕，${1.5 * (retryCount + 1)}s 后重试...`);
+        await new Promise(r => setTimeout(r, 1500 * (retryCount + 1)));
+        return fetchSubtitles(info, retryCount + 1);
+    }
+
+    return subs;
 }
 
 // --- UI Components ---
