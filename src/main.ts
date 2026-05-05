@@ -2,10 +2,21 @@
 import { GM_xmlhttpRequest, GM_setClipboard } from '$';
 
 // --- Configuration & Constants ---
+const ICONS = {
+    download: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;"><path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a3.375 3.375 0 0 0 3.375 3.375h9.75a3.375 3.375 0 0 0 3.375-3.375V16.5a.75.75 0 0 1 1.5 0v2.25a4.875 4.875 0 0 1-4.875 4.875H7.125A4.875 4.875 0 0 1 2.25 18.75V16.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" /></svg>`,
+    bug: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;"><path fill-rule="evenodd" d="M11.097 1.515a.75.75 0 0 1 .589.882L10.666 7.5h2.668l-.92-5.103a.75.75 0 1 1 1.472.265l1.02 5.655.162.9a.75.75 0 0 1-.741.883h-4.854a.75.75 0 0 1-.74-.883l.161-.9 1.021-5.655a.75.75 0 0 1 .882-.589ZM8.273 4.45a.75.75 0 0 1 .311 1.013l-2.5 4.33a.75.75 0 1 1-1.299-.75l2.475-4.282a.75.75 0 0 1 1.013-.311Zm7.454 0a.75.75 0 0 1 1.013.311l2.475 4.282a.75.75 0 1 1-1.299.75l-2.5-4.33a.75.75 0 0 1 .311-1.013ZM4.87 11.25a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75Zm14.26 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75ZM3.795 15.51a.75.75 0 0 1 1.012-.312l2.475 4.282a.75.75 0 1 1-1.299.75l-2.5-4.33a.75.75 0 0 1 .312-1.01Zm16.41 0a.75.75 0 0 1 .312 1.01l-2.5 4.33a.75.75 0 1 1-1.299-.75l2.475-4.282a.75.75 0 0 1 1.012.312ZM12 7.5a6 6 0 0 1 6 6v1.5a6 6 0 0 1-6 6 6 6 0 0 1-6-6v-1.5a6 6 0 0 1 6-6Z" clip-rule="evenodd" /></svg>`,
+    x: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>`,
+    copy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 0 1 3.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0 1 21 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 0 1 7.5 16.125V3.375Z" /><path d="M4.5 7.125A1.875 1.875 0 0 0 2.625 9v9a3.75 3.75 0 0 0 3.75 3.75h9a1.875 1.875 0 0 0 1.875-1.875V16.5H6.375a3.375 3.375 0 0 1-3.375-3.375V7.125H4.5Z" /></svg>`,
+    trash: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5 0v8.25a.75.75 0 0 0 1.5 0v-8.25Zm4.5 0a.75.75 0 1 0-1.5 0v8.25a.75.75 0 0 0 1.5 0v-8.25Z" clip-rule="evenodd" /></svg>`,
+    check: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 0 1 1.04-.208Z" clip-rule="evenodd" /></svg>`,
+    loading: `<svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="width: 24px; height: 24px; animation: spin 1s linear infinite;"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>`
+};
+
 const THEME = {
     primary: '#00aeec',
     primaryHover: '#0095c9',
     secondary: '#61666d',
+    secondaryHover: '#4a4d52',
     bg: 'rgba(255, 255, 255, 0.9)',
     text: '#18191c',
     textMuted: '#9499a0',
@@ -189,19 +200,19 @@ async function fetchSubtitles(info: any, isRetry = false): Promise<any[]> {
 function createStyle() {
     const style = document.createElement('style');
     style.innerHTML = `
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
         @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .sub-dl-trigger { width: 56px; height: 56px; background: ${THEME.primary}; color: white; border-radius: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: all 0.2s; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .sub-dl-trigger { width: 52px; height: 52px; background: ${THEME.primary}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: all 0.2s; border: none; }
         .sub-dl-trigger:hover { background: ${THEME.primaryHover}; transform: scale(1.05); }
         .sub-dl-trigger:active { transform: scale(0.95); }
-        .sub-dl-diag-trigger { width: 44px; height: 44px; background: ${THEME.secondary}; color: white; border-radius: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s; margin-bottom: 12px; }
-        .sub-dl-diag-trigger:hover { background: #4a4d52; transform: scale(1.05); }
+        .sub-dl-diag-trigger { width: 52px; height: 52px; background: ${THEME.secondary}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s; margin-bottom: 12px; border: none; }
+        .sub-dl-diag-trigger:hover { background: ${THEME.secondaryHover}; transform: scale(1.05); }
         .sub-dl-format-btn { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; transition: all 0.2s; }
         .sub-dl-format-btn.srt { background: ${THEME.primary}; color: white; }
         .sub-dl-format-btn.bcc { background: #f1f2f3; color: #61666d; }
         .sub-dl-item:hover { background: rgba(0,174,236,0.05); }
-        .sub-dl-diag-btn { background: none; border: 1px solid ${THEME.textMuted}; color: ${THEME.textMuted}; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .sub-dl-diag-btn { display: inline-flex; align-items: center; gap: 4px; background: none; border: 1px solid ${THEME.textMuted}; color: ${THEME.textMuted}; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
         .sub-dl-diag-btn:hover { border-color: ${THEME.primary}; color: ${THEME.primary}; }
         .diag-item { font-family: 'Consolas', monospace; font-size: 11px; padding: 6px 12px; border-bottom: 1px solid rgba(0,0,0,0.03); white-space: pre-wrap; word-break: break-all; }
         .diag-type-ERROR { color: ${THEME.error}; }
@@ -217,28 +228,28 @@ function injectUI() {
     wrapper.id = 'sub-dl-wrapper';
     wrapper.style.cssText = `position: fixed; bottom: 40px; right: 40px; z-index: 10000; display: flex; flex-direction: column; align-items: center; font-family: sans-serif;`;
 
-    const diagTrigger = document.createElement('div');
+    const diagTrigger = document.createElement('button');
     diagTrigger.className = 'sub-dl-diag-trigger';
-    diagTrigger.innerHTML = `<i class="fa-solid fa-bug"></i>`;
+    diagTrigger.innerHTML = ICONS.bug;
     diagTrigger.title = "诊断日志";
 
-    const mainTrigger = document.createElement('div');
+    const mainTrigger = document.createElement('button');
     mainTrigger.className = 'sub-dl-trigger';
-    mainTrigger.innerHTML = `<i class="fa-solid fa-download" style="font-size: 20px;"></i>`;
+    mainTrigger.innerHTML = ICONS.download;
     mainTrigger.title = "下载字幕";
 
     const menu = document.createElement('div');
     menu.id = 'sub-dl-menu';
-    menu.style.cssText = `position: absolute; bottom: 120px; right: 0; width: 300px; background: ${THEME.bg}; backdrop-filter: ${THEME.glass}; border-radius: 20px; box-shadow: ${THEME.shadow}; border: 1px solid ${THEME.border}; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s;`;
+    menu.style.cssText = `position: absolute; bottom: 130px; right: 0; width: 300px; background: ${THEME.bg}; backdrop-filter: ${THEME.glass}; border-radius: 20px; box-shadow: ${THEME.shadow}; border: 1px solid ${THEME.border}; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s;`;
 
     const diagPanel = document.createElement('div');
     diagPanel.id = 'sub-dl-diag-panel';
-    diagPanel.style.cssText = `position: absolute; bottom: 120px; right: 0; width: 320px; background: ${THEME.bg}; backdrop-filter: ${THEME.glass}; border-radius: 20px; box-shadow: ${THEME.shadow}; border: 1px solid ${THEME.border}; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s;`;
+    diagPanel.style.cssText = `position: absolute; bottom: 130px; right: 0; width: 320px; background: ${THEME.bg}; backdrop-filter: ${THEME.glass}; border-radius: 20px; box-shadow: ${THEME.shadow}; border: 1px solid ${THEME.border}; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s;`;
 
     menu.innerHTML = `
         <div style="padding: 16px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: bold; font-size: 16px;">字幕列表</span>
-            <i class="fa-solid fa-xmark" id="sub-dl-close-menu" style="cursor: pointer; color: ${THEME.textMuted};"></i>
+            <div id="sub-dl-close-menu" style="cursor: pointer; color: ${THEME.textMuted}; display: flex;">${ICONS.x}</div>
         </div>
         <div id="sub-dl-list" style="max-height: 320px; overflow-y: auto;"></div>
     `;
@@ -246,10 +257,10 @@ function injectUI() {
     diagPanel.innerHTML = `
         <div style="padding: 16px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
             <span style="font-weight: bold; font-size: 16px;">诊断报告</span>
-            <div style="display: flex; gap: 8px;">
-                <button id="sub-dl-copy" class="sub-dl-diag-btn"><i class="fa-solid fa-copy"></i> 复制</button>
-                <button id="sub-dl-clear" class="sub-dl-diag-btn"><i class="fa-solid fa-trash-can"></i> 清空</button>
-                <i class="fa-solid fa-xmark" id="sub-dl-close-diag" style="cursor: pointer; color: ${THEME.textMuted}; margin-left: 8px;"></i>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button id="sub-dl-copy" class="sub-dl-diag-btn">${ICONS.copy} 复制</button>
+                <button id="sub-dl-clear" class="sub-dl-diag-btn">${ICONS.trash} 清空</button>
+                <div id="sub-dl-close-diag" style="cursor: pointer; color: ${THEME.textMuted}; margin-left: 4px; display: flex;">${ICONS.x}</div>
             </div>
         </div>
         <div id="sub-dl-logs-box" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.02);"></div>
@@ -268,7 +279,7 @@ function injectUI() {
         menu.style.display = 'flex';
         const list = document.getElementById('sub-dl-list');
         if (!list) return;
-        list.innerHTML = '<div style="padding: 30px; text-align: center; color: #9499a0;"><i class="fa-solid fa-circle-notch fa-spin"></i> 正在嗅探...</div>';
+        list.innerHTML = `<div style="padding: 30px; text-align: center; color: #9499a0; display: flex; flex-direction: column; align-items: center; gap: 8px;">${ICONS.loading} 正在嗅探...</div>`;
         
         try {
             const info = getVideoInfo();
@@ -305,12 +316,14 @@ function injectUI() {
     (document.getElementById('sub-dl-close-menu') as HTMLElement).onclick = () => menu.style.display = 'none';
     (document.getElementById('sub-dl-close-diag') as HTMLElement).onclick = () => diagPanel.style.display = 'none';
     (document.getElementById('sub-dl-clear') as HTMLElement).onclick = () => { logs.length = 0; renderLogs(); };
-    (document.getElementById('sub-dl-copy') as HTMLElement).onclick = (e: any) => {
+    (document.getElementById('sub-dl-copy') as HTMLElement).onclick = () => {
         const header = `--- SubBili Diagnostic Report ---\nVersion: V${VERSION}\nURL: ${window.location.href}\nUA: ${navigator.userAgent}\nTime: ${new Date().toLocaleString()}\n------------------------------\n`;
         const content = logs.map(l => `[${l.time}] [${l.type}] ${l.message} ${l.data || ''}`).join('\n');
         GM_setClipboard(header + content);
-        e.target.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
-        setTimeout(() => e.target.innerHTML = '<i class="fa-solid fa-copy"></i> 复制', 2000);
+        const btn = document.getElementById('sub-dl-copy') as HTMLElement;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `${ICONS.check} 已复制`;
+        setTimeout(() => btn.innerHTML = originalHtml, 2000);
     };
 }
 

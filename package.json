@@ -1,6 +1,6 @@
 {
   "name": "subbili",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SubBili with Vite Build",
   "type": "module",
   "scripts": {
