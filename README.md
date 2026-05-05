@@ -14,9 +14,8 @@ A premium, high-performance UserScript for downloading Bilibili subtitles in SRT
 ## 🚀 Installation
 
 1. Install a UserScript manager like [ScriptCat](https://docs.scriptcat.org/) or [Tampermonkey](https://www.tampermonkey.net/).
-2. Copy the content of `dist/subbili.user.js`.
-3. Create a new script in your manager and paste the code.
-4. Save and refresh Bilibili.
+2. Click [**Install SubBili**](https://github.com/ericclose/subbili/releases/latest/download/subbili.user.js) (directly from GitHub Releases).
+3. Confirm the installation in your manager and refresh Bilibili.
 
 ## 🛠 Technical Highlights
 
